@@ -1,0 +1,17 @@
+🕹 Deployment Instructions: 2 Player Games
+Download the vibeCode.html file.
+
+Double-click the file or open it in any modern web browser (Chrome, Firefox, Edge, etc).
+
+Enter player names on the start screen.
+
+Choose a game mode:
+
+Normal Mode – Classic Pong
+
+Speed Round – Faster ball speed
+
+Reaction Duel – Press keys as fast as you can when it says "GO!"
+
+Play and enjoy!
+No installation or internet required.
