@@ -5,24 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>2 Player Games</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-
   <style>
-
-
-
-    #startMenu,
-    #reactionDuel,
-    #gameCanvas {
-      display: none;
-    }
-
-    input {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    border-radius: 6px;
-     border: none;
-    }
-
     body {
       font-family: 'Orbitron', sans-serif;
       margin: 0;
@@ -33,117 +16,376 @@
       height: 100vh;
       overflow: hidden;
     }
-
+    input, button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+    }
     canvas {
       border: 4px solid white;
       background-color: black;
     }
-#startMenu {
-  background: #c3b091;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-
-}
-
-button {
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-#reactionDuel h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.25rem;
-  font-weight: bold;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-}
-
-#reactionDuel p {
-  margin: 0.25rem 0;
-  font-size: 1rem;
-  color: #ddd;
-}
-
-#reactionDuel button {
-  background: linear-gradient(145deg, #836953, #895129);
-  color: #111;
-  font-weight: bold;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-#reactionDuel button:hover {
-  background: linear-gradient(145deg, #836953, #895129);
-}
-
+    #startMenu, #reactionDuel, #gameCanvas {
+      display: none;
+    }
+    #startMenu {
+      background: #c3b091;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    #reactionDuel {
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      color: white;
+    }
+    #reactionDuel h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    }
+    #reactionDuel p {
+      margin: 0.25rem 0;
+      font-size: 1rem;
+      color: #ddd;
+    }
+    #reactionDuel button {
+      background: linear-gradient(145deg, #836953, #895129);
+      color: #111;
+      font-weight: bold;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    #reactionDuel button:hover {
+      background: linear-gradient(145deg, #836953, #895129);
+    }
   </style>
 </head>
 <body>
-    <div id="nameScreen" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; color: white;">
-        <h2>Enter Player Names</h2>
-        <input type="text" id="player1Input" placeholder="Player 1 Name" required />
-        <input type="text" id="player2Input" placeholder="Player 2 Name" required />
-        <button onclick="submitNames()">Start</button>
+  <div id="nameScreen" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; color: white;">
+    <h2>Enter Player Names</h2>
+    <input type="text" id="player1Input" placeholder="Player 1 Name" required />
+    <input type="text" id="player2Input" placeholder="Player 2 Name" required />
+    <button id="startButton">Start</button>
+  </div>
+
+  <div id="startMenu">
+    <h1 style="color: white;">2 Player Pong</h1>
+    <button onclick="startGame('normal')">Normal Mode</button>
+    <button onclick="startGame('speed')">Speed Round</button>
+    <button onclick="openReactionDuel()">Reaction Duel</button>
+  </div>
+
+  <div id="reactionDuel">
+    <h2 style="margin-bottom: 1rem;">Reaction Duel</h2>
+    <div style="display: flex; justify-content: space-between; width: 90%; max-width: 900px; align-items: center;">
+      <div>
+        <h3 id="reactionPlayer1" style="color: #00ffcc;">Player 1</h3>
+        <p id="reactionScore1">Score: 0</p>
+        <p>Key: <strong>F</strong></p>
       </div>
-      
-
-
-
-
-    <div id="startMenu" style="display: none;">
-      <h1 style="color: white;">2 Player Pong</h1>
-      <button onclick="startGame('normal')">Normal Mode</button>
-      <button onclick="startGame('speed')">Speed Round</button>
-      <button onclick="openReactionDuel()">Reaction Duel</button>
-
+      <div style="text-align: center;">
+        <h1 id="reactionMessage" style="font-size: 2rem; color: #fff;">Get Ready...</h1>
+        <p id="reactionTime" style="font-size: 1.2rem; margin: 0.5rem 0;"></p>
+        <button onclick="startReactionDuel()">Start Round</button>
+      </div>
+      <div>
+        <h3 id="reactionPlayer2" style="color: #ff00aa;">Player 2</h3>
+        <p id="reactionScore2">Score: 0</p>
+        <p>Key: <strong>L</strong></p>
+      </div>
     </div>
-  
+    <button onclick="goToMenu()" style="margin-top: 2rem;">Back to Menu</button>
+  </div>
 
-    <div id="reactionDuel" style="display: none; flex-direction: column; align-items: center; width: 100%; color: white;">
-        <h2 style="margin-bottom: 1rem;">Reaction Duel</h2>
-      
-        <div style="display: flex; justify-content: space-between; width: 90%; max-width: 900px; align-items: center;">
-          <div style="text-align: left;">
-            <h3 id="reactionPlayer1" style="color: #00ffcc;">Player 1</h3>
-            <p id="reactionScore1">Score: 0</p>
-            <p>Key: <strong>F</strong></p>
-          </div>
-      
-          <div style="text-align: center;">
-            <h1 id="reactionMessage" style="font-size: 2rem; color: #fff;">Get Ready...</h1>
-            <p id="reactionTime" style="font-size: 1.2rem; margin: 0.5rem 0;"></p>
-            <button onclick="startReactionDuel()">Start Round</button>
-          </div>
-      
-          <div style="text-align: right;">
-            <h3 id="reactionPlayer2" style="color: #ff00aa;">Player 2</h3>
-            <p id="reactionScore2">Score: 0</p>
-            <p>Key: <strong>L</strong></p>
-          </div>
-        </div>
-      
-        <button onclick="goToMenu()" style="margin-top: 2rem;">Back to Menu</button>
-      </div>
-      
-      
+  <button id="pauseBtn" onclick="togglePause()" style="display: none; position: absolute; top: 20px; right: 20px;">Pause</button>
+  <button id="menuButton" onclick="goToMenu()" style="display: none; position: absolute; top: 60px; right: 20px;">Back to Menu</button>
 
+  <canvas id="gameCanvas" width="800" height="500"></canvas>
+  <div id="scoreMessage" style="display: none; color: white; font-size: 1.5rem;"></div>
 
-    <button id="pauseBtn" onclick="togglePause()" style="display: none; position: absolute; top: 20px; right: 20px;">Pause</button>
-    <button id="menuButton" onclick="goToMenu()" style="display: none; position: absolute; top: 60px; right: 20px;">Back to Menu</button>
-  
-    <canvas id="gameCanvas" width="800" height="500" style="display: none;"></canvas>
+  <script>
+    let player1Name = "";
+    let player2Name = "";
+    let player1Score = 0;
+    let player2Score = 0;
 
-  
+    document.addEventListener("DOMContentLoaded", () => {
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+      let gameMode = "normal";
+      let gameStarted = false;
+      let paused = false;
+      let leftScore = 0;
+      let rightScore = 0;
+      let scoreMessageTimeout;
+      let reactionStartTime = 0;
+      let reactionStarted = false;
+      let reactionReady = false;
+      let reactionTimeout;
 
+      const baseBallSpeed = 4;
+      let currentSpeedMultiplier = 1;
+      const speedIncreaseRate = { normal: 0.2, speed: 0.35 };
 
-    <script src="vibeCode.js"></script>
-  </body>
-  
+      const paddleWidth = 10;
+      const paddleHeight = 100;
+      const paddleSpeed = 7;
+
+      const leftPaddle = {
+        x: 20, y: canvas.height / 2 - paddleHeight / 2,
+        width: paddleWidth, height: paddleHeight, dy: 0
+      };
+
+      const rightPaddle = {
+        x: canvas.width - 20 - paddleWidth, y: canvas.height / 2 - paddleHeight / 2,
+        width: paddleWidth, height: paddleHeight, dy: 0
+      };
+
+      const ballRadius = 10;
+      const ball = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        dx: 4 * (Math.random() > 0.5 ? 1 : -1),
+        dy: 4 * (Math.random() > 0.5 ? 1 : -1)
+      };
+
+      function submitNames() {
+        const name1 = document.getElementById("player1Input").value.trim();
+        const name2 = document.getElementById("player2Input").value.trim();
+        if (!name1 || !name2) {
+          alert("Please enter names for both players!");
+          return;
+        }
+        player1Name = name1;
+        player2Name = name2;
+        document.getElementById("nameScreen").style.display = "none";
+        document.getElementById("startMenu").style.display = "flex";
+        document.getElementById("reactionPlayer1").textContent = player1Name;
+        document.getElementById("reactionPlayer2").textContent = player2Name;
+      }
+
+      function togglePause() {
+        paused = !paused;
+        document.getElementById("pauseBtn").textContent = paused ? "Resume" : "Pause";
+      }
+
+      function drawPaddle(p) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(p.x, p.y, p.width, p.height);
+      }
+
+      function drawBall() {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawScores() {
+        ctx.font = "32px Arial";
+        ctx.fillText(leftScore, canvas.width / 4, 50);
+        ctx.fillText(rightScore, canvas.width * 3 / 4, 50);
+      }
+
+      function resetBall(mult = 1) {
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height / 2;
+        currentSpeedMultiplier = mult;
+        const speed = baseBallSpeed * mult;
+        ball.dx = speed * (Math.random() > 0.5 ? 1 : -1);
+        ball.dy = speed * (Math.random() > 0.5 ? 1 : -1);
+      }
+
+      function update() {
+        leftPaddle.y += leftPaddle.dy;
+        rightPaddle.y += rightPaddle.dy;
+
+        leftPaddle.y = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddle.y));
+        rightPaddle.y = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddle.y));
+
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+
+        if (ball.y - ballRadius < 0 || ball.y + ballRadius > canvas.height) ball.dy = -ball.dy;
+
+        if (
+          ball.x - ballRadius < leftPaddle.x + paddleWidth &&
+          ball.y > leftPaddle.y &&
+          ball.y < leftPaddle.y + paddleHeight
+        ) {
+          currentSpeedMultiplier += speedIncreaseRate[gameMode];
+          ball.dx = Math.abs(baseBallSpeed * currentSpeedMultiplier);
+        }
+
+        if (
+          ball.x + ballRadius > rightPaddle.x &&
+          ball.y > rightPaddle.y &&
+          ball.y < rightPaddle.y + paddleHeight
+        ) {
+          currentSpeedMultiplier += speedIncreaseRate[gameMode];
+          ball.dx = -Math.abs(baseBallSpeed * currentSpeedMultiplier);
+        }
+
+        if (ball.x - ballRadius < 0) {
+          rightScore++;
+          resetBall(gameMode === "speed" ? 1.5 : 1);
+        } else if (ball.x + ballRadius > canvas.width) {
+          leftScore++;
+          resetBall(gameMode === "speed" ? 1.5 : 1);
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPaddle(leftPaddle);
+        drawPaddle(rightPaddle);
+        drawBall();
+        drawScores();
+      }
+
+      function gameLoop() {
+        if (!paused) {
+          update();
+          draw();
+        }
+        requestAnimationFrame(gameLoop);
+      }
+
+      function goToMenu() {
+        paused = false;
+        gameStarted = false;
+        document.getElementById("gameCanvas").style.display = "none";
+        document.getElementById("reactionDuel").style.display = "none";
+        document.getElementById("startMenu").style.display = "flex";
+        document.getElementById("pauseBtn").style.display = "none";
+        document.getElementById("menuButton").style.display = "none";
+        leftScore = 0;
+        rightScore = 0;
+        leftPaddle.y = rightPaddle.y = canvas.height / 2 - paddleHeight / 2;
+        resetBall(1);
+      }
+
+      function startGame(mode) {
+        if (!player1Name || !player2Name) {
+          alert("Please enter player names first!");
+          return;
+        }
+
+        gameMode = mode;
+        leftScore = 0;
+        rightScore = 0;
+        gameStarted = true;
+        paused = false;
+        currentSpeedMultiplier = mode === "speed" ? 1.5 : 1;
+
+        document.getElementById("startMenu").style.display = "none";
+        document.getElementById("gameCanvas").style.display = "block";
+        document.getElementById("pauseBtn").style.display = "block";
+        document.getElementById("menuButton").style.display = "block";
+
+        resetBall(currentSpeedMultiplier);
+        gameLoop();
+      }
+
+      function openReactionDuel() {
+        clearScoreMessage();
+        document.getElementById("startMenu").style.display = "none";
+        document.getElementById("reactionDuel").style.display = "flex";
+        document.getElementById("reactionMessage").textContent = "Get Ready...";
+        reactionStarted = false;
+        reactionReady = false;
+      }
+
+      function startReactionDuel() {
+        document.body.style.backgroundColor = "#c3b091";
+        document.getElementById("reactionMessage").textContent = "Wait for it...";
+        reactionStarted = true;
+        reactionReady = false;
+
+        const delay = Math.random() * 3000 + 2000;
+        reactionTimeout = setTimeout(() => {
+          document.getElementById("reactionMessage").textContent = "GO!";
+          document.body.style.backgroundColor = "green";
+          reactionStartTime = Date.now();
+          reactionReady = true;
+        }, delay);
+      }
+
+      function endRound() {
+        reactionStarted = false;
+        reactionReady = false;
+        clearTimeout(reactionTimeout);
+      }
+
+      function clearScoreMessage() {
+        if (scoreMessageTimeout) {
+          clearTimeout(scoreMessageTimeout);
+          scoreMessageTimeout = null;
+        }
+        document.getElementById("scoreMessage").style.display = "none";
+      }
+
+      function updateReactionScores() {
+        document.getElementById("reactionScore1").textContent = `Score: ${player1Score}`;
+        document.getElementById("reactionScore2").textContent = `Score: ${player2Score}`;
+      }
+
+      document.addEventListener("keydown", function (e) {
+        const key = e.key.toLowerCase();
+        if (key === "w") leftPaddle.dy = -paddleSpeed;
+        else if (key === "s") leftPaddle.dy = paddleSpeed;
+        else if (key === "arrowup") rightPaddle.dy = -paddleSpeed;
+        else if (key === "arrowdown") rightPaddle.dy = paddleSpeed;
+
+        if (!reactionStarted) return;
+
+        if (!reactionReady && (key === "f" || key === "l")) {
+          const msg = key === "f"
+            ? `${player1Name} False Start! ${player2Name} Wins!`
+            : `${player2Name} False Start! ${player1Name} Wins!`;
+          document.getElementById("reactionMessage").textContent = msg;
+          if (key === "f") player2Score++;
+          if (key === "l") player1Score++;
+          updateReactionScores();
+          endRound();
+        }
+
+        if (reactionReady && (key === "f" || key === "l")) {
+          const time = Date.now() - reactionStartTime;
+          const winner = key === "f" ? player1Name : player2Name;
+          document.getElementById("reactionMessage").textContent = `${winner} Wins!`;
+          document.getElementById("reactionTime").textContent = `Reaction Time: ${time}ms`;
+          if (key === "f") player1Score++;
+          if (key === "l") player2Score++;
+          updateReactionScores();
+          endRound();
+        }
+      });
+
+      document.addEventListener("keyup", function (e) {
+        const key = e.key.toLowerCase();
+        if (key === "w" || key === "s") leftPaddle.dy = 0;
+        if (key === "arrowup" || key === "arrowdown") rightPaddle.dy = 0;
+      });
+
+      document.getElementById("startButton").addEventListener("click", submitNames);
+
+      window.submitNames = submitNames;
+      window.startGame = startGame;
+      window.openReactionDuel = openReactionDuel;
+      window.startReactionDuel = startReactionDuel;
+      window.goToMenu = goToMenu;
+      window.togglePause = togglePause;
+    });
+  </script>
+</body>
 </html>
